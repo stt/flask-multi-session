@@ -13,7 +13,9 @@ from werkzeug.datastructures import CallbackDict
 from flask.sessions import SessionInterface, SessionMixin
 from werkzeug.local import Local
 import dateutil.parser
+import logging
 
+logger = logging.getLogger(__name__)
 
 local = Local()
 
@@ -114,7 +116,7 @@ class RedisSessionInterface(SessionInterface):
     local.force_null = False
     sid = request.cookies.get(app.session_cookie_name)
 
-    print(sid)
+    logger.debug("open_session: %s", sid)
 
     if not sid:
       sid = self.generate_sid()
@@ -131,7 +133,7 @@ class RedisSessionInterface(SessionInterface):
 
   def save_session(self, app, session, response):
 
-    print(session)
+    logger.debug("save_session: %s", session)
 
     if local.force_null:
       session = self.session_class(sid=session.sid, new=True, redis=self.redis, prefix=self.prefix)
